@@ -78,7 +78,7 @@ public class TextEditor {
         return result.toString();
     }
 
-    public String removeArticles(String text){
+    private String removeArticles(String text){
         StringBuilder result = new StringBuilder();
 
         String[] array = text.split(" ");
@@ -88,5 +88,12 @@ public class TextEditor {
             }
         }
         return result.toString();
+    }
+
+    public String editText(String text){
+        String timeLine_1 = removeCFromTheText(text);
+        String timeLine_2 = removeDoubleLetter(timeLine_1);
+        String timeLine_3 = removeTheLetterEAtTheEndOfWord(timeLine_2);
+        return removeArticles(timeLine_3);
     }
 }
