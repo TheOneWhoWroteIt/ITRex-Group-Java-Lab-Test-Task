@@ -18,6 +18,9 @@ public class TextEditor {
     private final static String I = "i";
     private final static String REGEX = "(\\D)\\1+";
     private final static String E = "e";
+    private final static String A = "a";
+    private final static String AN = "an";
+    private final static String TH = "th";
 
 
     private String removeCFromTheText(String text){
@@ -69,6 +72,18 @@ public class TextEditor {
                 result.append(s, 0, s.length()-1).append(" ");
 
             }else{
+                result.append(s).append(" ");
+            }
+        }
+        return result.toString();
+    }
+
+    public String removeArticles(String text){
+        StringBuilder result = new StringBuilder();
+
+        String[] array = text.split(" ");
+        for(String s : array){
+            if(!s.equals(A) && !s.equals(AN) && !s.equals(TH)){
                 result.append(s).append(" ");
             }
         }
