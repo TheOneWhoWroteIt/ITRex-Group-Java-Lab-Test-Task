@@ -50,4 +50,11 @@ public class TextEditor {
 
         return result.toString();
     }
+
+    private String RemoveDoubleLetter(String text){
+        String timeLine_1 = text.replaceAll(OO, U);
+        String timeLine_2 = timeLine_1.replaceAll(EE, I);
+
+        return convertsDoubleLettersIntoOne(timeLine_2);
+    }
 }
