@@ -17,6 +17,7 @@ public class TextEditor {
     private final static String U = "u";
     private final static String I = "i";
     private final static String REGEX = "(\\D)\\1+";
+    private final static String E = "e";
 
 
     private String removeCFromTheText(String text){
@@ -51,10 +52,26 @@ public class TextEditor {
         return result.toString();
     }
 
-    private String RemoveDoubleLetter(String text){
+    private String removeDoubleLetter(String text){
         String timeLine_1 = text.replaceAll(OO, U);
         String timeLine_2 = timeLine_1.replaceAll(EE, I);
 
         return convertsDoubleLettersIntoOne(timeLine_2);
+    }
+
+    private String removeTheLetterEAtTheEndOfWord(String text){
+        StringBuilder result = new StringBuilder();
+
+        String[] array = text.split(" ");
+        for(String s : array){
+            if((s.length() > 1) && (E.equals(String.valueOf(s.charAt(s.length()-1))))){
+
+                result.append(s, 0, s.length()-1).append(" ");
+
+            }else{
+                result.append(s).append(" ");
+            }
+        }
+        return result.toString();
     }
 }
