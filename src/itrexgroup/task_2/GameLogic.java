@@ -8,11 +8,11 @@ import java.util.Map;
 
 public class GameLogic {
 
-    private final static char SYMBOL_POINT = '.';
-    private final static char SYMBOL_ONE = '1';
-    private final static char SYMBOL_TWO = '2';
-    private final static String FILE_NAME = "src/itrexgroup/task_2/INPUT.txt";
-    private final static int SECONDS_FOR_STEP = 5;
+    private final char SYMBOL_POINT = '.';
+    private final char SYMBOL_ONE = '1';
+    private final char SYMBOL_TWO = '2';
+    private final String FILE_NAME = "src/itrexgroup/task_2/INPUT.txt";
+    private final int SECONDS_FOR_STEP = 5;
 
     private Map<Integer, Box[][]> convertDataFromAFileToAMap(String fileName){
         Map<Integer, Box[][]> map = new HashMap<>();
@@ -59,7 +59,7 @@ public class GameLogic {
         return map.get(level);
     }
 
-    public static int[] findStartAndFinishBox( Box[][] array, char symbol){
+    private int[] findStartAndFinishBox( Box[][] array, char symbol){
         int[] result = new int[2];
 
         for (int i = 0; i < array.length ; i++) {
@@ -70,6 +70,46 @@ public class GameLogic {
                 }
             }
         }
+        return result;
+    }
+
+    private int[] findNextBox(Box[][] array, int[] box){
+        int[] result = new int[2];
+        int M = box[0];
+        int N = box[1];
+
+        if(M-1 >= 0){
+            if((array[M-1][N].getValue() == SYMBOL_POINT || array[M-1][N].getValue() == SYMBOL_TWO) && !array[M-1][N].isVisit()){
+                result[0] = M-1;
+                result[1] = N;
+            }
+
+        }
+
+        if(N+1 < array[0].length){
+            if((array[M][N+1].getValue() == SYMBOL_POINT || array[M][N+1].getValue() == SYMBOL_TWO) && !array[M][N+1].isVisit()){
+                result[0] = M;
+                result[1] = N+1;
+            }
+
+        }
+
+        if(M+1 < array.length){
+            if((array[M+1][N].getValue() == SYMBOL_POINT || array[M+1][N].getValue() == SYMBOL_TWO) && !array[M+1][N].isVisit()){
+                result[0] = M+1;
+                result[1] = N;
+            }
+
+        }
+
+        if(N-1 >= 0){
+            if((array[M][N-1].getValue() == SYMBOL_POINT || array[M][N-1].getValue() == SYMBOL_TWO) && !array[M][N-1].isVisit()){
+                result[0] = M;
+                result[1] = N-1;
+            }
+
+        }
+
         return result;
     }
 }
