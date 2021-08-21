@@ -112,4 +112,18 @@ public class GameLogic {
 
         return result;
     }
+
+    private int[] findPointForExitAndEnter(Box[][] levelEnd, Box[][]levelNext ){
+        int[] result = new int[2];
+
+        for (int i = 0; i < levelEnd.length; i++) {
+            for (int j = 0; j < levelEnd[0].length ; j++) {
+                if(levelEnd[i][j].getValue() == SYMBOL_POINT && levelNext[i][j].getValue() == SYMBOL_POINT){
+                    result[0] = i;
+                    result[1] = j;
+                }
+            }
+        }
+        return result;
+    }
 }
