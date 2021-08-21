@@ -58,4 +58,18 @@ public class GameLogic {
 
         return map.get(level);
     }
+
+    public static int[] findStartAndFinishBox( Box[][] array, char symbol){
+        int[] result = new int[2];
+
+        for (int i = 0; i < array.length ; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                if(array[i][j].getValue() == symbol){
+                    result[0] = i;
+                    result[1] = j;
+                }
+            }
+        }
+        return result;
+    }
 }
