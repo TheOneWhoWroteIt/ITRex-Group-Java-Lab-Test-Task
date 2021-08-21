@@ -53,4 +53,9 @@ public class GameLogic {
         }
         return map;
     }
+
+    private  Box[][] findMatrixByLevel(Map<Integer, Box[][]> map, int level){
+
+        return map.get(level);
+    }
 }
