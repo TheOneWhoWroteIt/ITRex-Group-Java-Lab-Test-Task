@@ -126,4 +126,22 @@ public class GameLogic {
         }
         return result;
     }
+
+    private int getValueForStep(Box[][] array, int[] start, int[] finish, int value){
+
+        while(!array[finish[0]][finish[1]].isVisit()){
+            for (int i = 0; i < array.length ; i++) {
+                for (int j = 0; j < array[i].length ; j++) {
+                    if(i == start[0] && j == start[1]){
+                        int[] next = findNextBox(array, start);
+                        array[i][j].setVisit(true);
+                        start[0] = next[0];
+                        start[1] = next[1];
+                        value++;
+                    }
+                }
+            }
+        }
+        return value;
+    }
 }
