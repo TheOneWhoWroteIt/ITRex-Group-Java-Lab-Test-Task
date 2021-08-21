@@ -144,4 +144,34 @@ public class GameLogic {
         }
         return value;
     }
+
+    public int getTime(){
+        int value = 0;
+
+        Map<Integer, Box[][]> map = convertDataFromAFileToAMap(FILE_NAME);
+        int[] start = findStartAndFinishBox(findMatrixByLevel(map, map.size()-1), SYMBOL_ONE);
+        int[] finish = findStartAndFinishBox(findMatrixByLevel(map, 0), SYMBOL_TWO);
+
+        int[] firstLevel = start;
+        int[] secondLevel;
+
+        for (int i = map.size()-1; i >= 0; i--) {
+
+            Box[][] firstLevelBox = map.get(i);
+
+            if(i == 0){
+                secondLevel = finish;
+            }else{
+                int m = i-1;
+                Box[][] secondLevelBox = map.get(m);
+                secondLevel = findPointForExitAndEnter(firstLevelBox, secondLevelBox);
+            }
+
+            int stepValue = getValueForStep(firstLevelBox, firstLevel, secondLevel, value);
+
+            value = stepValue;
+            firstLevel = secondLevel;
+        }
+        return (value-1)*SECONDS_FOR_STEP;
+    }
 }
