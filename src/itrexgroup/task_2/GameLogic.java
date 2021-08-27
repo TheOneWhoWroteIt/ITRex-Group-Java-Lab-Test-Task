@@ -3,7 +3,9 @@ package itrexgroup.task_2;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameLogic {
@@ -73,44 +75,53 @@ public class GameLogic {
         return result;
     }
 
-    private int[] findNextBox(Box[][] array, int[] box){
-        int[] result = new int[2];
+    public List<int[]> findNeighboringBox(Box[][] array, int[] box){
+
+        List<int[]> list = new ArrayList<>();
         int M = box[0];
         int N = box[1];
 
         if(M-1 >= 0){
             if((array[M-1][N].getValue() == SYMBOL_POINT || array[M-1][N].getValue() == SYMBOL_TWO) && !array[M-1][N].isVisit()){
+                int[] result = new int[2];
                 result[0] = M-1;
                 result[1] = N;
+                list.add(result);
             }
 
         }
 
         if(N+1 < array[0].length){
             if((array[M][N+1].getValue() == SYMBOL_POINT || array[M][N+1].getValue() == SYMBOL_TWO) && !array[M][N+1].isVisit()){
+                int[] result = new int[2];
                 result[0] = M;
                 result[1] = N+1;
+                list.add(result);
             }
 
         }
 
         if(M+1 < array.length){
             if((array[M+1][N].getValue() == SYMBOL_POINT || array[M+1][N].getValue() == SYMBOL_TWO) && !array[M+1][N].isVisit()){
+                int[] result = new int[2];
                 result[0] = M+1;
                 result[1] = N;
+                list.add(result);
             }
 
         }
 
         if(N-1 >= 0){
             if((array[M][N-1].getValue() == SYMBOL_POINT || array[M][N-1].getValue() == SYMBOL_TWO) && !array[M][N-1].isVisit()){
+                int[] result = new int[2];
                 result[0] = M;
                 result[1] = N-1;
+                list.add(result);
             }
 
         }
 
-        return result;
+        return list;
     }
 
     private int[] findPointForExitAndEnter(Box[][] levelEnd, Box[][]levelNext ){
