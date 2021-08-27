@@ -382,32 +382,63 @@ public class GameLogic {
 
 
     public int getTime(){
-        int value = 0;
+        int time = 0;
 
-        Map<Integer, Box[][]> map = convertDataFromAFileToAMap(FILE_NAME);
-        int[] start = findStartAndFinishBox(findMatrixByLevel(map, map.size()-1), SYMBOL_ONE);
-        int[] finish = findStartAndFinishBox(findMatrixByLevel(map, 0), SYMBOL_TWO);
+        List<BoxData> boxDataList = getListBoxData();
+        int level = boxDataList.get(0).getLevel();
+        BoxData boxDataTemp = null;
+        int step = 0;
 
-        int[] firstLevel = start;
-        int[] secondLevel;
 
-        for (int i = map.size()-1; i >= 0; i--) {
+        int min = Integer.MAX_VALUE;
 
-            Box[][] firstLevelBox = map.get(i);
+        for (int i = 0; i < boxDataList.size(); i++) {
+            if(boxDataList.get(i).getLevel() == level){
 
-            if(i == 0){
-                secondLevel = finish;
-            }else{
-                int m = i-1;
-                Box[][] secondLevelBox = map.get(m);
-                secondLevel = findPointForExitAndEnter(firstLevelBox, secondLevelBox);
+                if(boxDataList.get(i).getValue() < min && boxDataList.get(i).getValue() != -1 ){
+                    min = boxDataList.get(i).getValue();
+                    boxDataTemp = boxDataList.get(i);
+                    step += boxDataTemp.getValue();
+                }
+            }
+        }
+
+        level--;
+
+
+        min = Integer.MAX_VALUE;
+        while(level > 0){
+            for (int i = 0; i <boxDataList.size(); i++) {
+                if(compareCoordinate(boxDataTemp.getFinish(), boxDataList.get(i).getStart()) && boxDataList.get(i).getLevel() == level){
+
+                    if(boxDataList.get(i).getValue() < min && boxDataList.get(i).getValue() != -1){
+                        min = boxDataList.get(i).getValue();
+                        boxDataTemp = boxDataList.get(i);
+                        step += boxDataTemp.getValue();
+                    }
+                }
             }
 
-            int stepValue = getValueForStep(firstLevelBox, firstLevel, secondLevel, value);
+            level--;
 
-            value = stepValue;
-            firstLevel = secondLevel;
         }
-        return (value-1)*SECONDS_FOR_STEP;
+
+        min = Integer.MAX_VALUE;
+        for (int i = 0; i <boxDataList.size(); i++) {
+            if(compareCoordinate(boxDataTemp.getFinish(), boxDataList.get(i).getStart()) && boxDataList.get(i).getLevel() == level){
+
+                if(boxDataList.get(i).getValue() < min && boxDataList.get(i).getValue() != -1){
+                    min = boxDataList.get(i).getValue();
+                    boxDataTemp = boxDataList.get(i);
+                    step += boxDataTemp.getValue();
+                }
+            }
+        }
+
+
+        time = (boxDataList.get(0).getLevel() + step)*SECONDS_FOR_STEP;
+
+
+        return time;
     }
 }
