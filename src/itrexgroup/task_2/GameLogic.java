@@ -150,6 +150,11 @@ public class GameLogic {
         return first[0] == second[0] && first[1] == second[1];
     }
 
+    public void setValueForStep(Box[][] box, int[] coordinate, int value){
+        box[coordinate[0]][coordinate[1]].setCounStep(value);
+
+    }
+
     public int getTime(){
         int value = 0;
 
