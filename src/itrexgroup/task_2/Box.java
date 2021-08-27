@@ -1,6 +1,6 @@
 package itrexgroup.task_2;
 
-public class Box {
+public class Box implements Cloneable {
 
     private boolean visit;
     private final char value;
