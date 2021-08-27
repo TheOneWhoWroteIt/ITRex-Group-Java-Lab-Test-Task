@@ -75,7 +75,7 @@ public class GameLogic {
         return result;
     }
 
-    public List<int[]> findNeighboringBox(Box[][] array, int[] box){
+    private List<int[]> findNeighboringBox(Box[][] array, int[] box){
 
         List<int[]> list = new ArrayList<>();
         int M = box[0];
@@ -124,7 +124,7 @@ public class GameLogic {
         return list;
     }
 
-    public List<int[]> findPointForExitAndEnter(Box[][] levelStart, Box[][]levelNext ){
+    private List<int[]> findPointForExitAndEnter(Box[][] levelStart, Box[][]levelNext ){
 
         List<int[]> listBox = new ArrayList<>();
 
@@ -150,8 +150,22 @@ public class GameLogic {
         return first[0] == second[0] && first[1] == second[1];
     }
 
-    public void setValueForStep(Box[][] box, int[] coordinate, int value){
+    private void setValueForStep(Box[][] box, int[] coordinate, int value){
         box[coordinate[0]][coordinate[1]].setCounStep(value);
+
+    }
+
+    private void updateStepCount(Box[][] box, int[] start){
+
+        List<int[]> list = findNeighboringBox(box, start);
+        for (int i = 0; i < list.size() ; i++) {
+            int[] coor = list.get(i);
+            int temp = box[start[0]][start[1]].getCounStep();
+            if((temp + 1) < box[coor[0]][coor[1]].getCounStep()){
+                setValueForStep(box, coor, temp + 1);
+            }
+
+        }
 
     }
 
