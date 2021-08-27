@@ -169,7 +169,7 @@ public class GameLogic {
 
     }
 
-    public Box[][] createCopyBox(Box[][] box){
+    private Box[][] createCopyBox(Box[][] box){
         Box[][] result = new Box[box.length][box[0].length];
 
         for (int i = 0; i <box.length ; i++) {
@@ -185,6 +185,201 @@ public class GameLogic {
         return result;
 
     }
+
+    private int[] findNextBoxForStep(Box[][] array, int[] box){
+        int M = box[0];
+        int N = box[1];
+
+        if(M-1 >= 0 && !array[M-1][N].isVisit() && (array[M-1][N].getValue() == SYMBOL_POINT || array[M-1][N].getValue() == SYMBOL_TWO)){
+            int[] result = new int[2];
+            result[0] = M-1;
+            result[1] = N;
+            return result;
+
+
+        }
+
+        else if(N+1 < array[0].length && !array[M][N+1].isVisit() && (array[M][N+1].getValue() == SYMBOL_POINT || array[M][N+1].getValue() == SYMBOL_TWO)){
+            int[] result = new int[2];
+            result[0] = M;
+            result[1] = N+1;
+            return result;
+
+        }
+
+        else if(M+1 < array.length && !array[M+1][N].isVisit() && (array[M+1][N].getValue() == SYMBOL_POINT || array[M+1][N].getValue() == SYMBOL_TWO)){
+            int[] result = new int[2];
+            result[0] = M+1;
+            result[1] = N;
+            return result;
+
+        }
+
+        else if(N-1 >= 0 && !array[M][N-1].isVisit() && (array[M][N-1].getValue() == SYMBOL_POINT || array[M][N-1].getValue() == SYMBOL_TWO)){
+            int[] result = new int[2];
+            result[0] = M;
+            result[1] = N-1;
+            return result;
+
+        }
+        return null;
+    }
+
+
+
+
+    private Box[][] getUpdateBoxMatrixByStepValue(Box[][] box, int[] start, int[] finish) {
+        Box[][] result = createCopyBox(box);
+        int[] prev = null;
+        int[] first = start;
+        List<int[]> listPrev = new ArrayList<>();
+        int count = 0;
+
+        setValueForStep(result, first, 0);
+
+        while(!compareCoordinate(first, finish)){
+
+            updateStepCount(result, first);
+            result[first[0]][first[1]].setVisit(true);
+            int[] second = findNextBoxForStep(result, first);
+
+            if(second != null){
+                prev = first;
+                first = second;
+                listPrev.add(prev);
+                count++;
+            }else{
+                second = first;
+                first = prev;
+
+                if(count == 1){
+                    prev = null;
+                    count = 0;
+                }
+                else{
+                    prev = listPrev.get(listPrev.size() - count);
+                    count--;
+                }
+
+            }
+        }
+
+        return  result;
+
+    }
+
+    private int getStepCountFromStartUntilFinish(Box[][] box, int[] start, int[] finish){
+        Box[][] temp = createCopyBox(box);
+        int result;
+
+        try{
+            Box[][] updateBox = getUpdateBoxMatrixByStepValue(temp, start, finish);
+            result = updateBox[finish[0]][finish[1]].getCounStep();
+
+        }catch (IndexOutOfBoundsException ex){
+            result = -1;
+        }
+
+        return result;
+    }
+
+
+
+
+    private List<BoxData> getListBoxData() {
+
+
+        List<BoxData> resultList = new ArrayList<>();
+
+        Map<Integer, Box[][]> map = convertDataFromAFileToAMap(FILE_NAME);
+        int[] start = findStartAndFinishBox(findMatrixByLevel(map, map.size() - 1), SYMBOL_ONE);
+        int[] finish = findStartAndFinishBox(findMatrixByLevel(map, 0), SYMBOL_TWO);
+
+
+        int step = 0;
+
+        for (int i = map.size()-1; i >= 0; i--) {
+
+            if (i == 0) {
+
+
+                Box[][] firstLevelBoxMatrix = map.get(i);
+                Box[][] secondLevelBoxMatrix = map.get(i+1);
+                BoxData boxData = null;
+                List<int[]> listPointEnter = findPointForExitAndEnter(firstLevelBoxMatrix, secondLevelBoxMatrix);
+                for (int j = 0; j < listPointEnter.size(); j++) {
+                    step = getStepCountFromStartUntilFinish(firstLevelBoxMatrix, listPointEnter.get(j), finish);
+
+                    int[] startCoordinate = {listPointEnter.get(j)[0], listPointEnter.get(j)[1]};
+                    int[] finishCoordinate = {finish[0], finish[1] };
+
+
+                    boxData = new BoxData(i, startCoordinate, finishCoordinate, step);
+                    resultList.add(boxData);
+
+
+                }
+
+
+            } else if (i == (map.size() - 1)) {
+
+
+                Box[][] firstLevelBoxMatrix = map.get(i);
+                Box[][] secondLevelBoxMatrix = map.get(i - 1);
+                BoxData boxData = null;
+                List<int[]> listPointExit = findPointForExitAndEnter(firstLevelBoxMatrix, secondLevelBoxMatrix);
+                for (int j = 0; j < listPointExit.size(); j++) {
+                    step = getStepCountFromStartUntilFinish(firstLevelBoxMatrix, start, listPointExit.get(j));
+
+
+                    int[] startCoordinate = {start[0], start[1]};
+                    int[] finishCoordinate = {listPointExit.get(j)[0], listPointExit.get(j)[1] };
+
+
+                    boxData = new BoxData(i, startCoordinate, finishCoordinate, step);
+                    resultList.add(boxData);
+
+
+                }
+
+
+
+            } else {
+
+                Box[][] one = map.get(i + 1);
+                Box[][] two = map.get(i);
+                Box[][] three = map.get(i - 1);
+                BoxData boxData = null;
+
+                List<int[]> listPointExit = findPointForExitAndEnter(two, three);
+                List<int[]> listPointEnter = findPointForExitAndEnter(one, two);
+                for (int j = 0; j < listPointEnter.size(); j++) {
+                    for (int k = 0; k < listPointExit.size(); k++) {
+                        step = getStepCountFromStartUntilFinish(two, listPointEnter.get(j), listPointExit.get(k));
+
+
+
+                        int[] startCoordinate = {listPointEnter.get(j)[0], listPointEnter.get(j)[1]};
+                        int[] finishCoordinate = {listPointExit.get(k)[0], listPointExit.get(k)[1] };
+
+
+                        boxData = new BoxData(i, startCoordinate, finishCoordinate, step);
+                        resultList.add(boxData);
+
+
+                    }
+                }
+
+
+
+            }
+
+        }
+
+        return resultList;
+
+    }
+
 
     public int getTime(){
         int value = 0;
