@@ -124,18 +124,26 @@ public class GameLogic {
         return list;
     }
 
-    private int[] findPointForExitAndEnter(Box[][] levelEnd, Box[][]levelNext ){
-        int[] result = new int[2];
+    public List<int[]> findPointForExitAndEnter(Box[][] levelStart, Box[][]levelNext ){
 
-        for (int i = 0; i < levelEnd.length; i++) {
-            for (int j = 0; j < levelEnd[0].length ; j++) {
-                if(levelEnd[i][j].getValue() == SYMBOL_POINT && levelNext[i][j].getValue() == SYMBOL_POINT){
-                    result[0] = i;
-                    result[1] = j;
+        List<int[]> listBox = new ArrayList<>();
+
+        for (int i = 0; i < levelStart.length; i++) {
+            for (int j = 0; j < levelStart[0].length ; j++) {
+                if((levelStart[i][j].getValue() == SYMBOL_ONE && levelNext[i][j].getValue() == SYMBOL_POINT)
+                        || (levelStart[i][j].getValue() == SYMBOL_POINT && levelNext[i][j].getValue() == SYMBOL_POINT)
+                        || (levelStart[i][j].getValue() == SYMBOL_POINT && levelNext[i][j].getValue() == SYMBOL_TWO) ){
+                    int[] coordinate = new int[2];
+                    coordinate[0] = i;
+                    coordinate[1] = j;
+                    listBox.add(coordinate);
+
                 }
+
             }
+
         }
-        return result;
+        return listBox;
     }
 
     private int getValueForStep(Box[][] array, int[] start, int[] finish, int value){
