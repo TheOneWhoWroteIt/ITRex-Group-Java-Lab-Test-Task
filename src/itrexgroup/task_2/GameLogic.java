@@ -169,6 +169,23 @@ public class GameLogic {
 
     }
 
+    public Box[][] createCopyBox(Box[][] box){
+        Box[][] result = new Box[box.length][box[0].length];
+
+        for (int i = 0; i <box.length ; i++) {
+            for (int j = 0; j < box[i].length; j++) {
+                try {
+                    result[i][j] = box[i][j].clone();
+                } catch (CloneNotSupportedException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+
+        return result;
+
+    }
+
     public int getTime(){
         int value = 0;
 
